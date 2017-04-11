@@ -30,11 +30,11 @@
 3. 查询平均成绩大于等于60分的同学的学生编号和学生姓名和平均成绩
 
     ```
-    select A.C_STUDENT_NUM , A.C_NAME , cast(avg(B.C_SCORE) as decimal(18,2)) avg_score
+    select A.C_STUDENT_NUM , A.C_NAME , avg(B.C_SCORE) avg_score
     from T_STUDENT AS A , T_SCORE AS B
     where A.C_STUDENT_NUM = B.C_STUDENT_NUM
     group by A.C_STUDENT_NUM , A.C_NAME
-    having cast(avg(B.C_SCORE) as decimal(18,2)) >= 60 
+    having avg(B.C_SCORE) >= 60 
     order by A.C_STUDENT_NUM;
     ```
 
@@ -57,16 +57,74 @@
 
         ```
         SELECT A.C_STUDENT_NUM, A.C_NAME, COUNT(B.C_STUDENT_NUM), SUM(B.C_SCORE)
-        FROM T_STUDENT AS A LEFT JOIN T_SCORE AS B
+        FROM T_STUDENT AS A 
+        LEFT JOIN T_SCORE AS B 
         ON A.C_STUDENT_NUM = B.C_STUDENT_NUM
         GROUP BY A.C_STUDENT_NUM, A.C_NAME;
         ```
 6. 查询"李"姓老师的数量 
-7. 查询学过"张三"老师授课的同学的信息 
+
+    ```
+    select count(C_TEACHER_NAME) from T_TEACHER where C_TEACHER_NAME like '李%';
+    ```
+    
+7. 查询学过"张三"老师授课的同学的信息
+
+    ```
+    select T_STUDENT.*
+    from T_STUDENT, T_COURSE, T_TEACHER, T_SCORE
+    where T_TEACHER.C_TEACHER_NUM = T_COURSE.C_TEACHER_NUM
+    and T_COURSE.C_COURSE_NUM = T_SCORE.C_COURSE_NUM
+    and T_SCORE.C_STUDENT_NUM = T_STUDENT.C_STUDENT_NUM
+    and T_TEACHER.C_TEACHER_NAME = '张三';
+    ```
 8. 查询没学过"张三"老师授课的同学的信息 
+
+    ```
+    SELECT T_STUDENT.* FROM T_STUDENT
+    WHERE T_STUDENT.C_STUDENT_NUM NOT IN (
+    select T_STUDENT.C_STUDENT_NUM
+    from T_STUDENT, T_COURSE, T_TEACHER, T_SCORE
+    where T_TEACHER.C_TEACHER_NUM = T_COURSE.C_TEACHER_NUM
+    and T_COURSE.C_COURSE_NUM = T_SCORE.C_COURSE_NUM
+    and T_SCORE.C_STUDENT_NUM = T_STUDENT.C_STUDENT_NUM
+    and T_TEACHER.C_TEACHER_NAME = '张三'
+    );
+    ```
 9. 查询学过编号为"01"并且也学过编号为"02"的课程的同学的信息
+
+    ```
+    SELECT T_STUDENT.* FROM T_STUDENT, T_SCORE AS A, T_SCORE AS B
+    WHERE T_STUDENT.C_STUDENT_NUM = A.C_STUDENT_NUM
+    AND T_STUDENT.C_STUDENT_NUM = B.C_STUDENT_NUM
+    AND A.C_COURSE_NUM = 1
+    AND B.C_COURSE_NUM = 2;
+    ```
 10. 查询学过编号为"01"但是没有学过编号为"02"的课程的同学的信息
+
+    ```
+    SELECT T_STUDENT.* 
+    FROM T_STUDENT, T_SCORE
+    WHERE T_STUDENT.C_STUDENT_NUM = T_SCORE.C_STUDENT_NUM
+    AND T_SCORE.C_COURSE_NUM = 1
+    AND T_STUDENT.C_STUDENT_NUM NOT IN (
+    SELECT T_STUDENT.C_STUDENT_NUM 
+    FROM T_STUDENT, T_SCORE
+    WHERE T_STUDENT.C_STUDENT_NUM = T_SCORE.C_STUDENT_NUM
+    AND T_SCORE.C_COURSE_NUM = 2
+    );
+    ```
 11. 查询没有学全所有课程的同学的信息 
+
+    ```
+    SELECT T_STUDENT.*
+    FROM T_STUDENT, T_SCORE
+    WHERE T_STUDENT.C_STUDENT_NUM = T_SCORE.C_STUDENT_NUM
+    GROUP BY C_NAME
+    HAVING COUNT(C_NAME) < (
+    SELECT COUNT(T_COURSE.C_COURSE_NUM) FROM T_COURSE)
+    ORDER BY T_STUDENT.C_STUDENT_NUM;
+    ```
 12. 查询至少有一门课与学号为"01"的同学所学相同的同学的信息 
 13. 查询和"01"号的同学学习的课程完全相同的其他同学的信息 
 14. 查询没学过"张三"老师讲授的任一门课程的学生姓名 
