@@ -130,7 +130,47 @@
 14. 查询没学过"张三"老师讲授的任一门课程的学生姓名 
 15. 查询两门及其以上不及格课程的同学的学号，姓名及其平均成绩 
 16. 检索"01"课程分数小于60，按分数降序排列的学生信息
+
+    ```
+    SELECT T_STUDENT.*, T_SCORE.C_SCORE
+    FROM T_STUDENT, T_SCORE
+    WHERE T_STUDENT.C_STUDENT_NUM = T_SCORE.C_STUDENT_NUM
+    AND T_SCORE.C_COURSE_NUM = 1
+    AND T_SCORE.C_SCORE < 60
+    ORDER BY T_SCORE.C_SCORE DESC;
+    ```
 17. 按平均成绩从高到低显示所有学生的所有课程的成绩以及平均成绩
+
+    ```
+    SELECT A.C_STUDENT_NUM, A.C_NAME, B.C_SCORE[语文], C.C_SCORE[数学], D.C_SCORE[英语], AVG(E.C_SCORE) avg_score
+    FROM T_STUDENT AS A
+    LEFT JOIN T_SCORE AS B 
+    ON A.C_STUDENT_NUM = B.C_STUDENT_NUM
+    AND B.C_COURSE_NUM = 2
+    LEFT JOIN T_SCORE AS C
+    ON A.C_STUDENT_NUM = C.C_STUDENT_NUM
+    AND C.C_COURSE_NUM = 1
+    LEFT JOIN T_SCORE AS D
+    ON A.C_STUDENT_NUM = D.C_STUDENT_NUM
+    AND D.C_COURSE_NUM = 3
+    LEFT JOIN T_SCORE AS E
+    ON A.C_STUDENT_NUM = E.C_STUDENT_NUM
+    GROUP BY E.C_STUDENT_NUM
+    ORDER BY avg_score DESC;
+    ```
+
+    ```
+    select A.C_STUDENT_NUM 学生编号 , A.C_NAME 学生姓名 ,
+        max(case C.C_COURSE_NAME when '语文' then B.C_SCORE else null end) [语文],
+        max(case C.C_COURSE_NAME when '数学' then B.C_SCORE else null end) [数学],
+        max(case C.C_COURSE_NAME when '英语' then B.C_SCORE else null end) [英语],
+        avg(B.C_SCORE) 平均分
+    from T_STUDENT AS A 
+    left join T_SCORE AS B on A.C_STUDENT_NUM = B.C_STUDENT_NUM
+    left join T_COURSE AS C on B.C_COURSE_NUM = C.C_COURSE_NUM
+    group by A.C_STUDENT_NUM , A.C_NAME
+    order by 平均分 desc;
+    ```
 
 18. 查询各科成绩最高分. 最低分和平均分：以如下形式显示：课程ID，课程name，最高分，最低分，平均分，及格率，中等率，优良率，优秀率
 及格为>=60，中等为：70-80，优良为：80-90，优秀为：>=90
