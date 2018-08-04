@@ -250,6 +250,25 @@ insert into t_score (stu_id, course_id, score) values
 
 17. 按平均成绩从高到低显示所有学生的所有课程的成绩以及平均成绩
 
+    ```sql
+    select stu.stu_id, stu.stu_name,
+      ifnull(sc1.score, 0) as yw_score, -- 语文分数
+      ifnull(sc2.score, 0) as sx_score, -- 数学分数
+      ifnull(sc3.score, 0) as yy_score, -- 英语分数
+      round(ifnull(avg_t.avg_score, 0), 2) as avg_score
+    from t_students stu
+    left join t_score sc1 on stu.stu_id = sc1.stu_id and sc1.course_id = 1 -- 语文成绩表
+    left join t_score sc2 on stu.stu_id = sc2.stu_id and sc2.course_id = 2 -- 数学成绩表
+    left join t_score sc3 on stu.stu_id = sc3.stu_id and sc3.course_id = 3 -- 英语成绩表
+    left join ( -- 子查询, 临时表
+        select stu_id, avg(score) as avg_score -- 平均分
+        from t_score
+        group by stu_id
+        order by avg_score
+        ) avg_t on stu.stu_id = avg_t.stu_id
+    order by avg_t.avg_score desc;
+    ```
+
 18. 查询各科成绩最高分. 最低分和平均分：以如下形式显示：课程ID，课程name，最高分，最低分，平均分，及格率，中等率，优良率，优秀率
 及格为>=60，中等为：70-80，优良为：80-90，优秀为：>=90
 19. 按各科成绩进行排序，并显示排名
