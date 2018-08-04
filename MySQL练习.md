@@ -136,7 +136,7 @@ insert into t_score (stu_id, course_id, score) values
 
 3. 查询平均成绩大于等于60分的同学的学生编号和学生姓名和平均成绩
 
-    ```
+    ```sql
     select stu.stu_id, stu.stu_name, round(avg(sc.score), 2) as avg_score
     from t_students stu
     left join t_score sc on stu.stu_id = sc.stu_id
@@ -146,7 +146,7 @@ insert into t_score (stu_id, course_id, score) values
 
 4. 查询平均成绩小于60分的同学的学生编号和学生姓名和平均成绩
 
-    ```
+    ```sql
     select stu.stu_id, stu.stu_name, round(ifnull(avg(sc.score), 0), 2) as avg_score
     from t_students stu
     left join t_score sc on stu.stu_id = sc.stu_id
@@ -156,7 +156,7 @@ insert into t_score (stu_id, course_id, score) values
 
 5. 查询所有同学的学生编号. 学生姓名. 选课总数. 所有课程的总成绩
 
-    ```
+    ```sql
     select stu.stu_id, stu.stu_name, 
         count(sc.course_id) as 'qty_course', -- 选课数量
         ifnull(sum(sc.score), 0) as 'sum_score' -- 总分数
@@ -167,14 +167,14 @@ insert into t_score (stu_id, course_id, score) values
 
 6. 查询"李"姓老师的数量 
 
-    ```
+    ```sql
     select count(0) from t_teachers
     where teacher_name like '李%';
     ```
     
 7. 查询学过"张三"老师授课的同学的信息
 
-    ```
+    ```sql
     select stu.* from t_students stu
     where stu.stu_id in (
         select sc.stu_id from t_score sc
@@ -186,7 +186,7 @@ insert into t_score (stu_id, course_id, score) values
 
 8. 查询没学过"张三"老师授课的同学的信息 
 
-    ```
+    ```sql
     select stu.* from t_students stu
     where stu.stu_id not in (
         select sc.stu_id from t_score sc
@@ -198,7 +198,7 @@ insert into t_score (stu_id, course_id, score) values
 
 9. 查询学过编号为"01"并且也学过编号为"02"的课程的同学的信息
 
-    ```
+    ```sql
     select stu_id, stu_name, birthday, stu_gender
     from t_students
     where stu_id in (
@@ -213,7 +213,7 @@ insert into t_score (stu_id, course_id, score) values
 
 10. 查询学过编号为"01"但是没有学过编号为"02"的课程的同学的信息
 
-    ```
+    ```sql
     select stu_id, stu_name, birthday, stu_gender
     from t_students
     where stu_id in (
@@ -228,7 +228,7 @@ insert into t_score (stu_id, course_id, score) values
 
 11. 查询没有学全所有课程的同学的信息 
 
-    ```
+    ```sql
     select stu_id, stu_name, birthday, stu_gender
     from t_students
     where stu_id in (
