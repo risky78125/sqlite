@@ -1,23 +1,19 @@
 CREATE TABLE T_STUDENT(
-_ID INTEGER PRIMARY KEY AUTOINCREMENT,
 C_STUDENT_NUM INTEGER UNIQUE NOT NULL,
 C_NAME TEXT NOT NULL,
 C_BIRTHDAY DATE,
 C_SEX TEXT);
 
 CREATE TABLE T_COURSE(
-_ID INTEGER PRIMARY KEY AUTOINCREMENT,
 C_COURSE_NUM INTEGER UNIQUE NOT NULL,
 C_COURSE_NAME TEXT UNIQUE NOT NULL,
 C_TEACHER_NUM INTEGER NOT NULL);
 
 CREATE TABLE T_TEACHER(
-_ID INTEGER PRIMARY KEY AUTOINCREMENT,
 C_TEACHER_NUM INTEGER UNIQUE NOT NULL,
 C_TEACHER_NAME TEXT UNIQUE NOT NULL);
 
 CREATE TABLE T_SCORE(
-_ID INTEGER PRIMARY KEY AUTOINCREMENT,
 C_STUDENT_NUM INTEGER NOT NULL,
 C_COURSE_NUM INTEGER NOT NULL,
 C_SCORE INTEGER);
@@ -46,42 +42,54 @@ ON A.C_STUDENT_NUM = C.C_STUDENT_NUM AND C.C_COURSE_NUM = 1
 LEFT JOIN T_SCORE AS D
 ON A.C_STUDENT_NUM = D.C_STUDENT_NUM AND D.C_COURSE_NUM = 3;
 
+SELECT T_STUDENT.*, T_COURSE.C_COURSE_NAME FROM T_STUDENT, T_TEACHER, T_COURSE, T_SCORE
+WHERE T_STUDENT.C_STUDENT_NUM = T_SCORE.C_STUDENT_NUM
+AND T_COURSE.C_COURSE_NUM = T_SCORE.C_COURSE_NUM
+AND T_TEACHER.C_TEACHER_NUM = T_COURSE.C_TEACHER_NUM
+AND T_TEACHER.C_TEACHER_NAME = '张三';
 
-insert into T_STUDENT (C_STUDENT_NUM, C_NAME, C_BIRTHDAY, C_SEX) values(01 , '赵雷' , '1990-01-01' , '男');
-insert into T_STUDENT (C_STUDENT_NUM, C_NAME, C_BIRTHDAY, C_SEX) values(02 , '钱电' , '1990-12-21' , '男');
-insert into T_STUDENT (C_STUDENT_NUM, C_NAME, C_BIRTHDAY, C_SEX) values(03 , '孙风' , '1990-05-20' , '男');
-insert into T_STUDENT (C_STUDENT_NUM, C_NAME, C_BIRTHDAY, C_SEX) values(04 , '李云' , '1990-08-06' , '男');
-insert into T_STUDENT (C_STUDENT_NUM, C_NAME, C_BIRTHDAY, C_SEX) values(05 , '周梅' , '1991-12-01' , '女');
-insert into T_STUDENT (C_STUDENT_NUM, C_NAME, C_BIRTHDAY, C_SEX) values(06 , '吴兰' , '1992-03-01' , '女');
-insert into T_STUDENT (C_STUDENT_NUM, C_NAME, C_BIRTHDAY, C_SEX) values(07 , '郑竹' , '1989-07-01' , '女');
-insert into T_STUDENT (C_STUDENT_NUM, C_NAME, C_BIRTHDAY, C_SEX) values(08 , '王菊' , '1990-01-20' , '女');
+SELECT T_STUDENT.*, T_COURSE.C_COURSE_NAME, T_SCORE.C_SCORE FROM T_STUDENT, T_SCORE,T_COURSE
+WHERE T_STUDENT.C_STUDENT_NUM = T_SCORE.C_STUDENT_NUM
+AND T_COURSE.C_COURSE_NUM = T_SCORE.C_COURSE_NUM
+AND T_COURSE.C_COURSE_NAME = '语文';
 
-insert into T_COURSE (C_COURSE_NUM, C_COURSE_NAME, C_TEACHER_NUM) values(01 , '语文' , 02);
-insert into T_COURSE (C_COURSE_NUM, C_COURSE_NAME, C_TEACHER_NUM) values(02 , '数学' , 01);
-insert into T_COURSE (C_COURSE_NUM, C_COURSE_NAME, C_TEACHER_NUM) values(03 , '英语' , 03);
 
-insert into T_TEACHER (C_TEACHER_NUM, C_TEACHER_NAME) values(01 , '张三');
-insert into T_TEACHER (C_TEACHER_NUM, C_TEACHER_NAME) values(02 , '李四');
-insert into T_TEACHER (C_TEACHER_NUM, C_TEACHER_NAME) values(03 , '王五');
 
-insert into T_SCORE (C_STUDENT_NUM, C_COURSE_NUM, C_SCORE) values('01' , '01' , 80);
-insert into T_SCORE (C_STUDENT_NUM, C_COURSE_NUM, C_SCORE) values('01' , '02' , 90);
-insert into T_SCORE (C_STUDENT_NUM, C_COURSE_NUM, C_SCORE) values('01' , '03' , 99);
-insert into T_SCORE (C_STUDENT_NUM, C_COURSE_NUM, C_SCORE) values('02' , '01' , 70);
-insert into T_SCORE (C_STUDENT_NUM, C_COURSE_NUM, C_SCORE) values('02' , '02' , 60);
-insert into T_SCORE (C_STUDENT_NUM, C_COURSE_NUM, C_SCORE) values('02' , '03' , 80);
-insert into T_SCORE (C_STUDENT_NUM, C_COURSE_NUM, C_SCORE) values('03' , '01' , 80);
-insert into T_SCORE (C_STUDENT_NUM, C_COURSE_NUM, C_SCORE) values('03' , '02' , 80);
-insert into T_SCORE (C_STUDENT_NUM, C_COURSE_NUM, C_SCORE) values('03' , '03' , 80);
-insert into T_SCORE (C_STUDENT_NUM, C_COURSE_NUM, C_SCORE) values('04' , '01' , 50);
-insert into T_SCORE (C_STUDENT_NUM, C_COURSE_NUM, C_SCORE) values('04' , '02' , 30);
-insert into T_SCORE (C_STUDENT_NUM, C_COURSE_NUM, C_SCORE) values('04' , '03' , 20);
-insert into T_SCORE (C_STUDENT_NUM, C_COURSE_NUM, C_SCORE) values('05' , '01' , 76);
-insert into T_SCORE (C_STUDENT_NUM, C_COURSE_NUM, C_SCORE) values('05' , '02' , 87);
-insert into T_SCORE (C_STUDENT_NUM, C_COURSE_NUM, C_SCORE) values('06' , '01' , 31);
-insert into T_SCORE (C_STUDENT_NUM, C_COURSE_NUM, C_SCORE) values('06' , '03' , 34);
-insert into T_SCORE (C_STUDENT_NUM, C_COURSE_NUM, C_SCORE) values('07' , '02' , 89);
-insert into T_SCORE (C_STUDENT_NUM, C_COURSE_NUM, C_SCORE) values('07' , '03' , 98);
+insert into T_STUDENT values(01 , '赵雷' , '1990-01-01' , '男');
+insert into T_STUDENT values(02 , '钱电' , '1990-12-21' , '男');
+insert into T_STUDENT values(03 , '孙风' , '1990-05-20' , '男');
+insert into T_STUDENT values(04 , '李云' , '1990-08-06' , '男');
+insert into T_STUDENT values(05 , '周梅' , '1991-12-01' , '女');
+insert into T_STUDENT values(06 , '吴兰' , '1992-03-01' , '女');
+insert into T_STUDENT values(07 , '郑竹' , '1989-07-01' , '女');
+insert into T_STUDENT values(08 , '王菊' , '1990-01-20' , '女');
+
+insert into T_COURSE values(01 , '语文' , 02);
+insert into T_COURSE values(02 , '数学' , 01);
+insert into T_COURSE values(03 , '英语' , 03);
+
+insert into T_TEACHER values(01 , '张三');
+insert into T_TEACHER values(02 , '李四');
+insert into T_TEACHER values(03 , '王五');
+
+insert into T_SCORE values('01' , '01' , 80);
+insert into T_SCORE values('01' , '02' , 90);
+insert into T_SCORE values('01' , '03' , 99);
+insert into T_SCORE values('02' , '01' , 70);
+insert into T_SCORE values('02' , '02' , 60);
+insert into T_SCORE values('02' , '03' , 80);
+insert into T_SCORE values('03' , '01' , 80);
+insert into T_SCORE values('03' , '02' , 80);
+insert into T_SCORE values('03' , '03' , 80);
+insert into T_SCORE values('04' , '01' , 50);
+insert into T_SCORE values('04' , '02' , 30);
+insert into T_SCORE values('04' , '03' , 20);
+insert into T_SCORE values('05' , '01' , 76);
+insert into T_SCORE values('05' , '02' , 87);
+insert into T_SCORE values('06' , '01' , 31);
+insert into T_SCORE values('06' , '03' , 34);
+insert into T_SCORE values('07' , '02' , 89);
+insert into T_SCORE values('07' , '03' , 98);
 
 
 
