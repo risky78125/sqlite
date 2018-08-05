@@ -243,10 +243,71 @@ insert into t_score (stu_id, course_id, score) values
     ```
 
 12. 查询至少有一门课与学号为"01"的同学所学相同的同学的信息 
+
+    ```
+    select * from t_students
+    where stu_id in (
+    	select stu_id from t_score
+    	where course_id in (
+    		select course_id from t_score where stu_id = 1
+    	) and stu_id != 1
+    	group by stu_id
+    );
+    ```
+    
 13. 查询和"01"号的同学学习的课程完全相同的其他同学的信息 
-14. 查询没学过"张三"老师讲授的任一门课程的学生姓名 
+
+    ```
+    select * from t_students where stu_id in (
+    	select temp.stu_id from (
+    		select sc.stu_id, group_concat(crs.course_name) as courses
+    		from t_score sc
+    		left join t_courses crs on sc.course_id = crs.course_id
+    		group by sc.stu_id
+    	) temp where temp.courses = (
+    		select group_concat(crs.course_name) as courses
+    		from t_score sc
+    		left join t_courses crs on sc.course_id = crs.course_id
+    		group by sc.stu_id
+    		having sc.stu_id = 1
+    	) and temp.stu_id != 1
+    );
+    ```
+14. 查询没学过"张三"老师讲授的任一门课程的学生姓名
+
+    ```
+    select stu.stu_name from t_students stu where stu.stu_id not in (
+        select sc.stu_id from t_score sc -- 学过贝吉塔教的课的学生id
+        left join t_courses cou on sc.course_id = cou.course_id
+        left join t_teachers tc on cou.teacher_id = tc.teacher_id
+        where tc.teacher_name = '贝吉塔'
+    );
+    ```
 15. 查询两门及其以上不及格课程的同学的学号，姓名及其平均成绩 
+
+    ```
+    select stu.stu_id, stu.stu_name, avg(sc.score)
+    from t_students stu
+    left join  t_score sc on stu.stu_id = sc.stu_id
+    group by stu.stu_id, stu.stu_name
+    having sum(
+    	case 
+    	when ifnull(sc.score, 0) < 60 then 1
+    	else 0 end
+    ) >= 2;
+    ```
 16. 检索"01"课程分数小于60，按分数降序排列的学生信息
+
+    ```
+    select stu.*, sum(sc.score) as score_sum
+    from t_students stu
+    left join t_score sc on stu.stu_id = sc.stu_id
+    where stu.stu_id in (
+    	select stu_id from t_score
+    	where course_id = 1 and score < 60
+    ) group by stu.stu_id
+    order by score_sum desc;
+    ```
 
 17. 按平均成绩从高到低显示所有学生的所有课程的成绩以及平均成绩
 
