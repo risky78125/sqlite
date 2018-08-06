@@ -332,6 +332,30 @@ insert into t_score (stu_id, course_id, score) values
 
 18. 查询各科成绩最高分. 最低分和平均分：以如下形式显示：课程ID，课程name，最高分，最低分，平均分，及格率，中等率，优良率，优秀率
 及格为>=60，中等为：70-80，优良为：80-90，优秀为：>=90
+
+    ```
+    select sc.course_id, crs.course_name,
+        max(sc.score) as max_score,
+        min(sc.score) as min_score,
+        avg(sc.score) as avg_score,
+        sum(sc.score >= 60) / 8 as pass_per,
+        sum(sc.score >= 70 and sc.score < 80) / 8 as medium_per,
+        sum(
+        	case
+        	when sc.score >= 80 and sc.score < 90 then 1
+        	else 0
+        	end
+        ) / 8 as good_per,
+        sum(
+        	case
+        	when sc.score >= 90 then 1
+        	else 0
+        	end
+        ) / 8 as perfect_per
+    from t_score sc
+    right join t_courses crs on sc.course_id = crs.course_id
+    group by sc.course_id, crs.course_name;
+    ```
 19. 按各科成绩进行排序，并显示排名
 
 20. 查询学生的总成绩并进行排名
