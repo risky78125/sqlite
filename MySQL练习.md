@@ -381,10 +381,35 @@ insert into t_score (stu_id, course_id, score) values
 29. 查询名字中含有"风"字的学生信息
 30. 查询同名同性学生名单，并统计同名人数 
 31. 查询1990年出生的学生名单 
+
+```sql
+SELECT *
+FROM t_students
+WHERE EXTRACT(YEAR FROM birthday) = 1990;
+```
+
 32. 查询每门课程的平均成绩，结果按平均成绩降序排列，平均成绩相同时，按课程编号升序排列 
 33. 查询平均成绩大于等于85的所有学生的学号. 姓名和平均成绩 
 34. 查询课程名称为"数学"，且分数低于60的学生姓名和分数 
+
+```sql
+SELECT
+  t_students.stu_name,
+  t_score.score
+FROM t_score
+  CROSS JOIN t_courses ON t_score.course_id = t_courses.course_id AND t_courses.course_name = '数学'
+  CROSS JOIN t_students ON t_score.stu_id = t_students.stu_id
+WHERE score < 60
+```
+
 35. 查询所有学生的课程及分数情况； 
+
+```sql
+SELECT stu_name,score,course_name FROM t_students
+LEFT JOIN t_score ON t_students.stu_id = t_score.stu_id
+LEFT JOIN t_courses ON t_score.course_id = t_courses.course_id;
+```
+
 36. 查询任何一门课程成绩在70分以上的姓名. 课程名称和分数； 
 37. 查询不及格的课程
 38. 查询课程编号为01且课程成绩在80分以上的学生的学号和姓名； 
