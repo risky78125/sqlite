@@ -403,7 +403,20 @@ insert into t_score (stu_id, course_id, score) values
 47. 查询本周过生日的学生
 48. 查询下周过生日的学生
 49. 查询本月过生日的学生
+
+```sql
+SELECT *
+FROM t_students
+WHERE EXTRACT(MONTH FROM birthday) = EXTRACT(MONTH FROM curdate());
+```
+
 50. 查询下月过生日的学生
 
+```sql
+SELECT *
+FROM t_students
+WHERE EXTRACT(MONTH FROM birthday) = EXTRACT(MONTH FROM curdate()) + 1
+      OR EXTRACT(MONTH FROM birthday) = 1 AND EXTRACT(MONTH FROM curdate()) = 12;
+```
 
 
