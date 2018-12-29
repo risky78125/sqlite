@@ -229,16 +229,17 @@ insert into t_score (stu_id, course_id, score) values
 11. 查询没有学全所有课程的同学的信息 
 
     ```sql
-    select stu_id, stu_name, birthday, stu_gender
-    from t_students
-    where stu_id in (
-      select stu_id
-      from t_score
-      group by stu_id
-      having count(course_id) < (
-        select count(0)
-        from t_courses
-      )
+    select student_id, student_name
+    from tb_student
+    where student_id in (
+        select stu.student_id
+        from tb_student stu
+        left join tb_score sc on stu.student_id = sc.student_id
+        group by student_id
+        having count(course_id) < (
+            select count(0)
+            from tb_course
+        )
     );
     ```
 
